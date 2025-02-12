@@ -15,6 +15,7 @@ async def insert( task_name: str):
         await db.execute(f"INSERT INTO tasks (name) VALUES ('{task_name}');")
         await db.commit()
 
+
 async def remove(task_id: int):
     async with aiosqlite.connect("persistence/app.db") as db:
         async with db.execute(f"SELECT id FROM tasks WHERE id = {task_id}") as cursor:
@@ -23,9 +24,3 @@ async def remove(task_id: int):
                 return {"Error": "Task not found"}
         await db.execute(f"DELETE FROM tasks WHERE id = {task_id}")
         await db.commit()
-    
-async def last_id():
-     async with aiosqlite.connect("persistence/app.db") as db:
-        async with db.execute("SELECT id FROM tasks;") as cursor:
-            data = await cursor.fetchall()
-            return data
