@@ -5,7 +5,10 @@ async def get_all():
     async with aiosqlite.connect("persistence/app.db") as db:
         async with db.execute("SELECT * FROM tasks;") as cursor:
             data = await cursor.fetchall()
-            return data
+            list = []
+            for i in data:
+                list.append({"id": i[0], "name": i[1]})
+            return list
 
 async def insert(task_id: int, task_name: str):
     async with aiosqlite.connect("persistence/app.db") as db:
@@ -24,3 +27,4 @@ async def remove(task_id: int):
                 return {"Error": "Task not found"}
         await db.execute(f"DELETE FROM tasks WHERE id = {task_id}")
         await db.commit()
+    
