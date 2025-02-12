@@ -26,8 +26,8 @@ async def get():
     return data
 
 @app.post("/api/create")
-async def create(task: Task):
-    result = await tasks.insert(task.id, task.name)
+async def create(name: str | None = None):
+    result = await tasks.insert(name)
     if result is not None:
         return result
     return {"Successful": "New task created"}

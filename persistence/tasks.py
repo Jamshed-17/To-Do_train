@@ -10,13 +10,9 @@ async def get_all():
                 list.append({"id": i[0], "name": i[1]})
             return list
 
-async def insert(task_id: int, task_name: str):
+async def insert( task_name: str):
     async with aiosqlite.connect("persistence/app.db") as db:
-        async with db.execute(f"SELECT id FROM tasks WHERE id = {task_id}") as cursor:
-            data = await cursor.fetchone()
-            if data is not None:
-                return {"Error": "Task with this id is already exists"}
-        await db.execute(f"INSERT INTO tasks (id, name) VALUES ({task_id}, '{task_name}');")
+        await db.execute(f"INSERT INTO tasks (name) VALUES ('{task_name}');")
         await db.commit()
 
 async def remove(task_id: int):
@@ -28,3 +24,8 @@ async def remove(task_id: int):
         await db.execute(f"DELETE FROM tasks WHERE id = {task_id}")
         await db.commit()
     
+async def last_id():
+     async with aiosqlite.connect("persistence/app.db") as db:
+        async with db.execute("SELECT id FROM tasks;") as cursor:
+            data = await cursor.fetchall()
+            return data
